@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -11,24 +12,25 @@ namespace Application;
 
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\Log\Writer\FirePhp;
+use Zend\Log\Logger;
 
-class Module
-{
-    public function onBootstrap(MvcEvent $e)
-    {
+require('vendor/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php');
+
+class Module {
+
+    public function onBootstrap(MvcEvent $e) {
         $e->getApplication()->getServiceManager()->get('translator');
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
     }
 
-    public function getConfig()
-    {
+    public function getConfig() {
         return include __DIR__ . '/config/module.config.php';
     }
 
-    public function getAutoloaderConfig()
-    {
+    public function getAutoloaderConfig() {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
@@ -37,4 +39,18 @@ class Module
             ),
         );
     }
+
+    public function getServiceConfig() {
+        return array(
+            'factories' => array(
+                'Zend\Log\FirePhp' => function($sm) {
+                    $writer_firebug = new \Zend\Log\Writer\FirePhp();
+                    $logger = new \Zend\Log\Logger();
+                    $logger->addWriter($writer_firebug);
+                    return $logger;
+                },
+            ),
+        );
+    }
+
 }

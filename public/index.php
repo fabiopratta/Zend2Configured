@@ -5,6 +5,10 @@
  */
 chdir(dirname(__DIR__));
 
+
+//Debug Zend developer
+define('REQUEST_MICROTIME', microtime(true));
+
 // Setup autoloading
 require 'init_autoloader.php';
 
